@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>花と色の二面性診断 - クールモダンVer. (画像付き)</title>
+    <style>
+        /* ==================================== */
+        /* 1. 全体スタイル＆クールな配色 */
+        /* ==================================== */
+        body {
+            font-family: 'Helvetica Neue', 'Arial', 'Noto Sans JP', sans-serif;
+            background-color: #f7f9fc; /* 非常に明るいグレー */
+            color: #333;
+            max-width: 750px; 
+            margin: 0 auto;
+            padding: 0;
+            line-height: 1.7;
+            text-align: center;
+        }
+        header {
+            background-color: #004a80; /* メインカラー: 深いネイビーブルー */
+            color: white;
+            padding: 30px 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+        h1 {
+            font-size: 2em;
+            margin: 0;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+        #description {
+            padding: 25px 20px;
+            font-size: 1em;
+            color: #555;
+            background-color: #eaf1f7; /* 薄いブルーの背景 */
+        }
+        
+        /* ==================================== */
+        /* 2. 質問エリア（クリーンデザイン） */
+        /* ==================================== */
+        #diagnosis-questions {
+            padding: 20px;
+        }
+        .question {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #007bff; /* アクセントカラーのライン */
+            text-align: left;
+        }
+        .question p {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #1a1a1a;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .choices label {
+            display: block;
+            padding: 16px 20px;
+            margin: 10px 0;
+            background-color: #f0f4f7;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .choices label:hover {
+            background-color: #e5eaf0;
+        }
+        input[type="radio"] {
+            display: none;
+        }
+        input[type="radio"]:checked + span {
+            font-weight: bold;
+            color: #004a80; /* メインカラーで強調 */
+            background-color: #eaf1f7; 
+            border-radius: 4px;
+            padding: 2px 0 2px 5px;
+            display: block;
+            margin: -2px 0;
+            border-left: 4px solid #007bff; /* 選択時の青いライン */
+        }
+        input[type="radio"]:checked + span::before {
+            content: '▶︎ '; /* シンプルな矢印 */
+            color: #007bff;
+        }
+        
+        /* 診断ボタン */
+        button {
+            background-color: #007bff; /* アクセントカラー */
+            color: white;
+            border: none;
+            padding: 18px 45px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 40px;
+            cursor: pointer;
+            width: 90%;
+            max-width: 300px;
+            margin: 30px auto 50px;
+            display: block;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* ==================================== */
+        /* 3. 結果エリア（タイプ名を特に強調） */
+        /* ==================================== */
+        #result {
+            padding: 40px 30px;
+            background-color: #ffffff;
+            border-top: 10px solid #004a80; /* 太いネイビーボーダー */
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            display: none;
+        }
+        .result-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #004a80;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e5ea;
+            padding-bottom: 15px;
+        }
+        .result-section h3 {
+            font-size: 1.3em;
+            color: #007bff;
+            border-left: 5px solid #007bff;
+            padding-left: 10px;
+            margin-top: 35px;
+            margin-bottom: 15px;
+        }
+        
+        /* 診断タイプ名を大きく表示 */
+        .result-section b {
+            font-size: 1.7em; /* 大きく強調 */
+            font-weight: 800; /* 極太 */
+            display: block;
+            margin: 15px 0 20px;
+            color: #004a80; /* ネイビーブルー */
+            text-align: center;
+            padding: 10px;
+            background-color: #eaf1f7;
+            border-radius: 4px;
+        }
+        .result-section p {
+            color: #4a4a4a;
+            font-size: 1em;
+        }
+        .flower-icon {
+            font-size: 1.6em; 
+            margin-right: 8px;
+            vertical-align: middle; 
+        }
+        /* 結果画像用のスタイル */
+        .result-image {
+            max-width: 80%; /* 幅を親要素の80%に制限 */
+            height: auto;
+            display: block; /* 中央寄せのためにブロック要素に */
+            margin: 20px auto 30px auto; /* 上下左右のマージン */
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            object-fit: contain; /* 画像がはみ出さないように調整 */
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>花と色の二面性診断</h1>
+    </header>
+    <div id="description">
+        <p>6つの質問から、あなたの「外面」と「内面」を8つの花タイプに分類します。あなたの秘めた魅力を発見し、自己分析にお役立てください。</p>
+    </div>
+
+    <div id="diagnosis-questions">
+        
+        <div class="question">
+            <p>Q1. グループ活動で、あなたが自然と取る（または目指す）役割は？</p>
+            <div class="choices">
+                <label><input type="radio" name="q1" value="A"> <span>議論をリードし、みんなを引っ張る</span></label>
+                <label><input type="radio" name="q1" value="B"> <span>場の雰囲気を和ませる、ムードメーカー</span></label>
+                <label><input type="radio" name="q1" value="C"> <span>客観的に状況を分析し、冷静に意見を言う</span></label>
+                <label><input type="radio" name="q1" value="D"> <span>一歩引いて、全体をサポートする</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <p>Q2. 他人から言われて「一番嬉しい」と感じる言葉は？</p>
+            <div class="choices">
+                <label><input type="radio" name="q2" value="A"> <span>「華やかで、自信があって素敵だね」</span></label>
+                <label><input type="radio" name="q2" value="B"> <span>「いつも明るく、元気をもらえるよ」</span></label>
+                <label><input type="radio" name="q2" value="C"> <span>「知的で、すごく頼りになるね」</span></label>
+                <label><input type="radio" name="q2" value="D"> <span>「穏やかで、一緒にいると安心する」</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <p>Q3. あまり親しくない人が多い集まり。あなたは...</p>
+            <div class="choices">
+                <label><input type="radio" name="q3" value="A"> <span>積極的にいろいろな人に話しかけにいく</span></label>
+                <label><input type="radio" name="q3" value="B"> <span>会全体の様子を、少し離れたところから眺めている</span></label>
+                <label><input type="radio" name="q3" value="C"> <span>聞き役になり、相手の話を笑顔でうなずきながら聞く</span></label>
+                <label><input type="radio" name="q3" value="D"> <span>自分の興味がある話題を振り、深く語り合えそうな人を探す</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <p>Q4. あなたが「本当の自分」を表すと思う言葉は？</p>
+            <div class="choices">
+                <label><input type="radio" name="q4" value="A"> <span>夢中になれる「情熱」</span></label>
+                <label><input type="radio" name="q4" value="B"> <span>一人で静かに過ごす「平穏」</span></label>
+                <label><input type="radio" name="q4" value="C"> <span>物事を探求する「好奇心」</span></label>
+                <label><input type="radio" name="q4" value="D"> <span>筋道を立てて考える「論理」</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <p>Q5. 心からリラックスできるのは、どんな瞬間？</p>
+            <div class="choices">
+                <label><input type="radio" name="q5" value="A"> <span>一人で趣味や好きなことに没頭している時</span></label>
+                <label><input type="radio" name="q5" value="B"> <span>気の合う仲間と、わいわいおしゃべりをしている時</span></label>
+                <label><input type="radio" name="q5" value="C"> <span>自然の中や静かな場所で、穏やかに過ごす時</span></label>
+                <label><input type="radio" name="q5" value="D"> <span>難しい本を読んだり、新しい知識を得たりしている時</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <p>Q6. あなたの心の中の「天気」を例えるなら？</p>
+            <div class="choices">
+                <label><input type="radio" name="q6" value="A"> <span>どこまでも広がる「快晴」</span></label>
+                <label><input type="radio" name="q6" value="B"> <span>エネルギッシュな「夏の雷雨」</span></label>
+                <label><input type="radio" name="q6" value="C"> <span>静かに全てを包む「霧」</span></label>
+                <label><input type="radio" name="q6" value="D"> <span>穏やかに降る「小雨」</span></label>
+            </div>
+        </div>
+
+        <button onclick="showResult()">診断結果を見る</button>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        // 8タイプの診断結果データ（アイコンに加えて、画像パスを追加！）
+        const resultsData = {
+            sunflower: {
+                name: "元気で素直なひまわりタイプ",
+                icon: "🌻", 
+                image: "images/himawari.jpg", // 
+                outer: "あなたは太陽のような明るいオーラがあり、周りからは「社交的でエネルギッシュな人」とみられています。あなたがそこにいるだけで場が明るくなり、自然と周りに元気を与える存在です。",
+                inner: "内面は、その明るさそのままの「素直さ」を持ち合わせています。楽しいことは全力で楽しみ、感動もストレートに表現するでしょう。ただ、常に周りを元気づけようとするあまり、時々自分のエネルギーが切れてしまうことも。自分一人の時間も大切にし、しっかり充電することを忘れないでください。"
+            },
+            cosmos: {
+                name: "はかなげで繊細なカスミソウタイプ",
+                icon: "🌼",
+                image: "images/kasumisou,jpg", // 
+                outer: "あなたは、ふんわりと優しい性格を持ち合わせており、周りからは「儚げで守ってあげたい」というイメージを持たれています。出しゃばらず、その性格からサポート役として陰ながらチームを支えることも多いでしょう。",
+                inner: "その控えめなオーラから、自分の意見を強く主張するのが苦手かもしれません。しかし、あなたの中には確かな優しさと繊細な感受性があります。自己分析では、その「聞き出す力」「支える力」を強みとして認識し、時には「私はこう思う」と小さな声で伝えてみる勇気も大切にしてください。"
+            },
+            rose: {
+                name: "情熱とプライドのローズタイプ",
+                icon: "🌹",
+                image: "images/rose.jpg", //
+                outer: "あなたは情熱的で華やかなオーラがあり、周りからは「自信家で魅力的な人」に見られています。自分の意見をしっかり持ち、自然と人を惹きつけるリーダーのような存在です。",
+                inner: "しかしその自信に満ちた姿とは裏腹に、内面は「プライドの高さ」ゆえの繊細さも持ち合わせています。実は傷つきやすく、心を許した相手には深い愛情を見せる一面も。外面と内面のギャップに悩むかもしれませんが、その多面性があなたの最大の魅力です。自分を過度に守らず、信頼できる人には素直な内面を見せることも大切です。"
+            },
+            lily: {
+                name: "気品立つ純粋なユリタイプ",
+                icon: "🤍",
+                image: "images/lily.png", // 
+                outer: "あなたは美しく、凛とした気品のあるオーラがあり、周りからは「純粋で清らかな人」という印象を持たれています。穏やかな物腰から繊細だと思われることも多いでしょう。",
+                inner: "しかしあなたの本質は、見かけの繊細さとは異なる「強い芯」と、他人に媚びない「独立心」です。純粋であるがゆえに、曲がったことが許せない頑固さも。周りからは「何を考えているか分からない」とミステリアスに思われがちですが、その信念の強さこそがあなたの武器です。"
+            },
+            hydrangea: {
+                name: "多彩なアジサイタイプ",
+                icon: "💙",
+                image: "images/ajisai.jpg", // 
+                outer: "あなたは、どこか掴みどころのないミステリアスなオーラと、周りに合わせられる「協調性」を同時に持ち合わせた、多彩な才能の持ち主です。TPOに合わせて自分の色を変えられる器用さがあります。",
+                inner: "内面は非常に「感受性が豊か」ですが、それをあまり表に出しません。周りからは「感情が見えにくい人」と思われるかもしれませんが、あなたの中では様々な考えや感情が渦巻いています。その深さがあなたの個性です。無理に自分を一つに定義せず、「色々な自分がいて良い」と受け入れることが、自己分析の第一歩です。"
+            },
+            lavender: {
+                name: "穏やかな癒し系のラベンダータイプ",
+                icon: "💜",
+                image: "images/rabender.jpg", // 
+                outer: "あなたは、穏やかで優しいオーラを持ち合わせており、周りに「癒やし」を与える存在です。あなたのそばにいると、なぜか心が落ち着くと感じる人も多いでしょう。",
+                inner: "その癒やしの力は、あなたが「一人の時間」を大切にし、自分と向き合うことで培われたものです。内面はとても「感受性が豊か」で、他人の感情にも敏感。だからこそ、一人の時間で心をリセットすることが不可欠なのです。自分のペースを守ることが、あなたの最大の強みを発揮する秘訣です。"
+            },
+            sakura: {
+                name: "可愛げのあるサクラタイプ",
+                icon: "🌸",
+                image: "images/sakura.jpg", //
+                outer: "あなたは、その場にいるだけで愛される「可愛げ」と、誰にでも分け隔てなく接する「優しさ」を併せ持ち、周りの人が自然と惹きつけられる存在です。人と協力する「協調性」も抜群です。",
+                inner: "内面はとても「謙虚」で、自分を後回しにしてでも周りを優先しようとします。その姿が「儚げ」なイメージを与えることも。あなたの優しさ自体は最大の魅力ですが、時には自分を一番に大切にする勇気も必要。「自分も相手も大切にする」バランスを見つけることが、あなたの課題であり、成長の鍵となります。"
+            },
+            mint: {
+                name: "クールで爽やかなミントタイプ",
+                icon: "🍃",
+                image: "images/mint.png", // 
+                outer: "あなたは、物事を筋道立てて考える「論理的」な思考と、サバサバとしたオーラから、周りからは「クールで知的な人」という印象を持たれています。無駄を嫌い、合理的に物事を進めます。",
+                inner: "そのクールさの源は、物事の本質を素早く見抜く「頭の回転の速さ」です。内面では常に状況を分析しています。ただ、その厳しさが自分や他人にも向けられることがあるかもしれません。自己分析では「冷静な判断力」を強みとしつつ、時には「完璧でなくても良い」と、自分と周りを少しだけ許してあげると、より魅力が輝きます。"
+            }
+        };
+
+        // 診断ロジック（変更なし）
+        function showResult() {
+            const scores = {
+                outer: { sunflower: 0, cosmos: 0, rose: 0, lily: 0, hydrangea: 0, lavender: 0, sakura: 0, mint: 0 },
+                inner: { sunflower: 0, cosmos: 0, rose: 0, lily: 0, hydrangea: 0, lavender: 0, sakura: 0, mint: 0 }
+            };
+
+            const q1 = document.querySelector('input[name="q1"]:checked');
+            const q2 = document.querySelector('input[name="q2"]:checked');
+            const q3 = document.querySelector('input[name="q3"]:checked');
+            const q4 = document.querySelector('input[name="q4"]:checked');
+            const q5 = document.querySelector('input[name="q5"]:checked');
+            const q6 = document.querySelector('input[name="q6"]:checked');
+
+            if (!q1 || !q2 || !q3 || !q4 || !q5 || !q6) {
+                alert("すべての質問に回答してください。");
+                return;
+            }
+
+            // --- スコアリングロジック (外面: Q1-Q3) ---
+            if (q1.value === 'A') { scores.outer.rose++; }
+            else if (q1.value === 'B') { scores.outer.sunflower++; scores.outer.sakura++; }
+            else if (q1.value === 'C') { scores.outer.mint++; scores.outer.hydrangea++; }
+            else if (q1.value === 'D') { scores.outer.cosmos++; scores.outer.lily++; scores.outer.lavender++; }
+
+            if (q2.value === 'A') { scores.outer.rose++; scores.outer.lily++; }
+            else if (q2.value === 'B') { scores.outer.sunflower++; }
+            else if (q2.value === 'C') { scores.outer.mint++; }
+            else if (q2.value === 'D') { scores.outer.cosmos++; scores.outer.hydrangea++; scores.outer.lavender++; scores.outer.sakura++; }
+
+            if (q3.value === 'A') { scores.outer.sunflower++; }
+            else if (q3.value === 'B') { scores.outer.mint++; scores.outer.lily++; scores.outer.hydrangea++; }
+            else if (q3.value === 'C') { scores.outer.cosmos++; scores.outer.lavender++; scores.outer.sakura++; }
+            else if (q3.value === 'D') { scores.outer.rose++; }
+
+            // --- スコアリングロジック (内面: Q4-Q6) ---
+            if (q4.value === 'A') { scores.inner.rose++; }
+            else if (q4.value === 'B') { scores.inner.cosmos++; scores.inner.lily++; scores.inner.hydrangea++; scores.inner.lavender++; scores.inner.sakura++; }
+            else if (q4.value === 'C') { scores.inner.sunflower++; }
+            else if (q4.value === 'D') { scores.inner.mint++; }
+
+            if (q5.value === 'A') { scores.inner.rose++; scores.inner.lavender++; }
+            else if (q5.value === 'B') { scores.inner.sunflower++; }
+            else if (q5.value === 'C') { scores.inner.cosmos++; scores.inner.lily++; scores.inner.hydrangea++; scores.inner.lavender++; scores.inner.sakura++; }
+            else if (q5.value === 'D') { scores.inner.mint++; }
+
+            if (q6.value === 'A') { scores.inner.sunflower++; }
+            else if (q6.value === 'B') { scores.inner.rose++; }
+            else if (q6.value === 'C') { scores.inner.lily++; scores.inner.hydrangea++; scores.inner.mint++; }
+            else if (q6.value === 'D') { scores.inner.cosmos++; scores.inner.lavender++; scores.inner.sakura++; }
+
+            // 最高スコアのタイプを見つける
+            let outerType = Object.keys(scores.outer).reduce((a, b) => scores.outer[a] > scores.outer[b] ? a : b);
+            let innerType = Object.keys(scores.inner).reduce((a, b) => scores.inner[a] > scores.inner[b] ? a : b);
+
+            // 結果を表示（タイプ名を大きく強調、画像も表示）
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `
+                <div class="result-title">診断結果：あなたの二面性</div>
+                
+                <div class="result-section">
+                    <h3>あなたの【外面】タイプ</h3>
+                    <img src="${resultsData[outerType].image}" alt="${resultsData[outerType].name}" class="result-image">
+                    <p>
+                        <span class="flower-icon">${resultsData[outerType].icon}</span>
+                        <span style="font-size: 1.1em; font-weight: bold; color: #555;">外面タイプは...</span>
+                    </p>
+                    <b>${resultsData[outerType].name}</b>
+                    <p>${resultsData[outerType].outer}</p>
+                </div>
+                
+                <hr style="border: 0; border-top: 1px solid #e0e5ea; margin: 30px 0;">
+                
+                <div class="result-section">
+                    <h3>あなたの【内面】タイプ</h3>
+                    <img src="${resultsData[innerType].image}" alt="${resultsData[innerType].name}" class="result-image">
+                    <p>
+                        <span class="flower-icon">${resultsData[innerType].icon}</span>
+                        <span style="font-size: 1.1em; font-weight: bold; color: #555;">内面タイプは...</span>
+                    </p>
+                    <b>${resultsData[innerType].name}</b>
+                    <p>${resultsData[innerType].inner}</p>
+                </div>
+
+                <div style="text-align: center; margin-top: 40px; font-style: italic; color: #777; padding: 15px; background-color: #f0f4f7; border-radius: 6px;">
+                    <p>この結果を自己理解のヒントとして、あなたの強みを活かしてください。</p>
+                </div>
+            `;
+            
+            document.getElementById('diagnosis-questions').style.display = 'none';
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+
+</body>
+</html>
